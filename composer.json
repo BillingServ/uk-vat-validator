@@ -3,6 +3,7 @@
     "description": "A Composer package to validate UK VAT numbers using the HMRC API.",
     "type": "library",
     "homepage": "https://www.billingserv.com",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "VatValidator\\": "src/"
