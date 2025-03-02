@@ -39,7 +39,7 @@ class VatValidatorService
         // Initialize Guzzle HTTP client
         $this->client = new Client([
             'base_uri' => $this->baseUri,
-            'headers'  => ['Accept' => 'application/json'],
+            'headers'  => ['Accept' => 'application/vnd.hmrc.2.0+json'],
         ]);
 
         // Authenticate and store access token
