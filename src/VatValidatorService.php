@@ -19,22 +19,23 @@ class VatValidatorService
 
     public function __construct()
     {
-        // Load configuration from environment
-        $this->clientId     = env('HMRC_CLIENT_ID');
-        $this->clientSecret = env('HMRC_CLIENT_SECRET');
-        $this->grantType    = env('HMRC_GRANT_TYPE', 'client_credentials');
-        $this->scope        = env('HMRC_SCOPE', 'read:vat');
+        // Determine if we're using sandbox
+        $useSandbox = config('vat_validator.use_sandbox', false);
+        $config = $useSandbox ? config('vat_validator.sandbox') : config('vat_validator.live');
+
+        // Load configuration
+        $this->clientId = $config['client_id'];
+        $this->clientSecret = $config['client_secret'];
+        $this->grantType = $config['grant_type'];
+        $this->scope = $config['scope'];
 
         if (empty($this->clientId) || empty($this->clientSecret)) {
-            throw new \Exception("ERROR: HMRC_CLIENT_ID or HMRC_CLIENT_SECRET is not set in .env");
+            throw new \Exception("ERROR: client_id or client_secret is not set in config");
         }
 
-        // Determine API endpoints based on sandbox flag
-        $useSandbox      = env('HMRC_USE_SANDBOX', false);
-        $this->baseUri   = $useSandbox
-            ? 'https://test-api.service.hmrc.gov.uk'
-            : 'https://api.service.hmrc.gov.uk';
-        $this->oauthUrl  = $this->baseUri . '/oauth/token';
+        // Set API endpoints
+        $this->baseUri = $config['api_base'];
+        $this->oauthUrl = $config['oauth_url'];
 
         // Initialize Guzzle HTTP client
         $this->client = new Client([
